@@ -2,9 +2,14 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+//  載入 bcryptjs library
+const bcryptjs = require('bcryptjs')
+
 // 載入 user model
 const db = require('../models')
 const User = db.User
+
+
 // 登入頁面
 router.get('/login', (req, res) => {
   res.render('login')
@@ -38,12 +43,19 @@ router.post('/register', (req, res) => {
         email,
         password,
       })
-      newUser
-        .save()
-        .then(user => {
-          res.redirect('/')                   // 新增完成導回首頁
+      bcryptjs.genSalt(10, (err, salt) => {
+        bcryptjs.hash(newUser.password, salt, (err, hash) => {
+          if (err) throw err
+          newUser.password = hash
+          newUser
+            .save()
+            .then(user => {
+              res.redirect('/')                   // 新增完成導回首頁
+            })
+            .catch(err => console.log(err))
         })
-        .catch(err => console.log(err))
+      })
+
     }
   })
 })
