@@ -21,11 +21,6 @@ module.exports = passport => {
               return done(null, false, { message: 'Email and Password incorrect' })
             }
           })
-          // if (user.password != password) {
-          //   console.log('user password not correct.')
-          //   return done(null, false, { message: 'Email or Password incorrect' })
-          // }
-          // return done(null, user)
         })
     })
   )
