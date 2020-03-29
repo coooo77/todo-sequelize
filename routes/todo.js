@@ -10,106 +10,91 @@ const { authenticated } = require('../config/auth')
 
 // 列出全部 Todo
 router.get('/', authenticated, (req, res) => {
-  res.send('列出全部 Todo')
+  res.redirect('/')
 })
 
 // 新增一筆 Todo 頁面
 router.get('/new', authenticated, (req, res) => {
-  res.send('新增 Todo 頁面')
-})
-
-// 顯示一筆 Todo 的詳細內容
-router.get('/:id', authenticated, (req, res) => {
-  res.send('顯示一筆 Todo')
+  return res.render('new')
 })
 
 // 新增一筆  Todo
 router.post('/', authenticated, (req, res) => {
-  res.send('新增一筆  Todo')
+  Todo.create({
+    name: req.body.name,
+    done: false,
+    UserId: req.user.id
+  })
+    .then((todo) => { return res.redirect('/') })
+    .catch((error) => { return res.status(422).json(error) })
+})
+
+// 顯示一筆 Todo 的詳細內容
+router.get('/:id', authenticated, (req, res) => {
+  User.findByPk(req.user.id)
+    .then((user) => {
+      if (!user) throw new Error("user not found");
+
+      return Todo.findOne({
+        where: {
+          UserId: req.user.id,
+          Id: req.params.id
+        }
+      })
+    })
+    .then((todo) => { return res.render('detail', { todo: todo.get() }) })
+    .catch((error) => { return res.status(422).json(error) })
 })
 
 // 修改 Todo 頁面
 router.get('/:id/edit', authenticated, (req, res) => {
-  res.send('修改 Todo 頁面')
+  User.findByPk(req.user.id)
+    .then((user) => {
+      if (!user) throw new Error("user not found")
+      return Todo.findOne({
+        where: {
+          Id: req.params.id,
+          UserId: req.user.id,
+        }
+      })
+    })
+    .then((todo) => { return res.render('edit', { todo: todo.get() }) })
 })
 
 // 修改 Todo
 router.put('/:id', authenticated, (req, res) => {
-  res.send('修改 Todo')
+  Todo.findOne({
+    where: {
+      Id: req.params.id,
+      UserId: req.user.id,
+    }
+  })
+    .then((todo) => {
+      todo.name = req.body.name
+      todo.done = req.body.done === "on"
+
+      return todo.save()
+    })
+    .then((todo) => { return res.redirect(`/todos/${req.params.id}`) })
+    .catch((error) => { return res.status(422).json(error) })
 })
 
 // 刪除 Todo
 router.delete('/:id/delete', authenticated, (req, res) => {
-  res.send('刪除 Todo')
+  User.findByPk(req.user.id)
+    .then((user) => {
+      if (!user) throw new Error("user not found")
+
+      return Todo.destroy({
+        where: {
+          UserId: req.user.id,
+          Id: req.params.id
+        }
+      })
+    })
+    .then((todo) => { return res.redirect('/') })
+    .catch((error) => { return res.status(422).json(error) })
 })
-
-// // 列出全部 Todo
-// router.get('/', authenticated, (req, res) => {
-//   return res.redirect('/')
-// })
-
-// // 新增一筆 Todo 頁面
-// router.get('/new', authenticated, (req, res) => {
-//   return res.render('new')
-// })
-
-// // 顯示一筆 Todo 的詳細內容
-// router.get('/:id', authenticated, (req, res) => {
-//   Todo.findByPk({ where: { _id: req.params.id, userId: req.user._id } })
-//     .then(todo => {
-//       return res.render('detail', { todo: todo })
-//     })
-// })
-
-// // 新增一筆  Todo
-// router.post('/', authenticated, (req, res) => {
-//   // 建立 Todo model 實例
-//   const todo = new Todo({
-//     name: req.body.name, // name 是從 new 頁面 form 傳過來
-//     userId: req.user._id
-//   })
-//   // 存入資料庫
-//   todo.save(err => {
-//     if (err) return console.error(err)
-//     return res.redirect('/') // 新增完後，將使用者導回首頁
-//   })
-// })
-
-// // 修改 Todo 頁面
-// router.get('/:id/edit', authenticated, (req, res) => {
-//   Todo.findByPk({ where: { _id: req.params.id, userId: req.user._id } })
-//     .then(todo => {
-//       return res.render('edit', { todo: todo })
-//     })
-// })
-
-// // 修改 Todo
-// router.put('/:id', authenticated, (req, res) => {
-//   Todo.findByPk({ where: { _id: req.params.id, userId: req.user._id } })
-//     .then(todo => {
-//       todo.name = req.body.name
-//       if (req.body.done === 'on') {
-//         todo.done = true
-//       } else {
-//         todo.done = false
-//       }
-//       todo.save(err => {
-//         if (err) return console.error(err)
-//         return res.redirect(`/todos/${req.params.id}`)
-//       })
-//     })
-// })
-
-// // 刪除 Todo
-// router.delete('/:id/delete', authenticated, (req, res) => {
-//   Todo.findByPk({ where: { _id: req.params.id, userId: req.user._id } })
-//     .then(todo => {
-//       todo.remove(err => {
-//         if (err) return console.error(err)
-//         return res.redirect('/')
-//       })
-//     })
-// })
 
 // 設定 /todos 路由
 module.exports = router
