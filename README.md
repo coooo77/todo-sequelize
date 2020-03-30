@@ -34,26 +34,34 @@ cd 下載位置/todo-sequelize
 ```console
 npm install
 ```
-4. 輸入種子資料
+4. 透過Sequelize CLI指令建立資料庫
+```console
+cd 下載位置/todo-sequelize/models/seeds
+npx sequelize db:drop
+npx sequelize db:create
+```
+5. 透過Sequelize CLI指令使用Migration建立model
+```console
+npx sequelize db:migrate
+```
+6. 輸入種子資料
 ```console
 cd 下載位置/todo-sequelize/models/seeds
 node seeder.js
 ```
-
-5. 登入[FB網站](https://developers.facebook.com/)取得API Key，在檔案中新增.env
+7. 登入[FB網站](https://developers.facebook.com/)取得API Key，在檔案中新增.env
 ```console
 // .env
 FACEBOOK_ID=xxxxxxxx
 FACEBOOK_SECRET=xxxxxxxx
 FACEBOOK_CALLBACK=http://localhost:3000/auth/facebook/callback
 ```
-
-6. 啟動專案
+8. 啟動專案
 ```console
 cd 下載位置/todo-sequelize
 npm run dev
 ```
-7. 開啟瀏覽器，輸入網址
+9. 開啟瀏覽器，輸入網址
 > [localhost:3000/](https://localhost:3000/)
 
 ## 功能描述 (features)：
