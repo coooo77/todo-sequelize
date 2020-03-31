@@ -46,8 +46,7 @@ npx sequelize db:migrate
 ```
 6. 輸入種子資料
 ```console
-cd 下載位置/todo-sequelize/models/seeds
-node seeder.js
+npx sequelize db:seed:all
 ```
 7. 登入[FB網站](https://developers.facebook.com/)取得API Key，在檔案中新增.env
 ```console
