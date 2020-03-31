@@ -3,12 +3,15 @@ const app = express()
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-const db = require('./models')
+// const db = require('./models')
 const port = 3000
 
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
+
+const flash = require('connect-flash')
+app.use(flash())
 
 const session = require('express-session')
 const passport = require('passport')
@@ -32,6 +35,8 @@ require('./config/passport')(passport)
 
 app.use((req, res, next) => {
   res.locals.user = req.user
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
   res.locals.isAuthenticated = req.isAuthenticated()
   next()
 })
