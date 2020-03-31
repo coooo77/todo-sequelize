@@ -1,15 +1,38 @@
 <!-- ./views/detail.handlebars -->
-<form action="/todos/{{{todo.id}}}/delete?_method=DELETE" method="POST" style="display: inline;">
-  <div class="input-group">
-    <div class="input-group-prepend">
-      <div class="input-group-text">
-        <input type="checkbox" name="done" {{#if todo.done}} checked{{/if}} disabled>
-      </div>
-    </div>
-    <input type="text" placeholder="name" name="name" value="{{{todo.name}}}" class="form-control" disabled>
-    <div class="input-group-append">
-      <a href="/todos/{{{todo.id}}}/edit" class="btn btn-success">edit</a>
-      <button type="submit" class="btn btn-danger">delete</button>
+<div class="input-group">
+  <div class="input-group-prepend">
+    <div class="input-group-text">
+      <input type="checkbox" name="done" {{#if todo.done}} checked{{/if}} disabled>
     </div>
   </div>
-</form>
+  <input type="text" placeholder="name" name="name" value="{{{todo.name}}}" class="form-control" disabled>
+  <div class="input-group-append">
+    <a href="/todos/{{{todo.id}}}/edit" class="btn btn-success">edit</a>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#Modal{{{todo._id}}}">delete</button>
+  </div>
+</div>
+
+<div class="modal fade" id="Modal{{{todo._id}}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel">
+          您正在刪除一筆資料
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        確定要刪除{{todo.name}}嗎?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">放棄</button>
+        <form action="/todos/{{{todo.id}}}/delete?_method=DELETE" method="POST" style="display: inline;">
+          <button class="btn btn-danger p-1 btn-lg" type="submit">刪除</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -14,9 +14,36 @@
         <div class="col-auto">
           <a href="/todos/{{{this.id}}}" class="btn btn-secondary">detail</a>
           <a href="/todos/{{{this.id}}}/edit" class="btn btn-success">edit</a>
-          <form action="/todos/{{{this.id}}}/delete?_method=DELETE" method="post" style="display:inline">
-            <button type="submit" class="btn btn-danger">delete</button>
-          </form>
+          {{!-- <form action="/todos/{{{this.id}}}/delete?_method=DELETE" method="post" style="display:inline"> --}}
+          <button type="button" class="btn btn-danger" data-toggle="modal"
+            data-target="#Modal{{{this._id}}}">delete</button>
+          {{!-- </form> --}}
+
+          <div class="modal fade" id="Modal{{{this._id}}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">
+                    您正在刪除一筆資料
+                  </h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  確定要刪除{{this.name}}嗎?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">放棄</button>
+                  <form action="/todos/{{{this.id}}}/delete?_method=DELETE" method="post" style="display:inline">
+                    <button class="btn btn-danger p-1 btn-lg" type="submit">刪除</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </li>
